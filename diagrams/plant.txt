@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+
+actor Student
+
+rectangle AutomotiveSystem {
+  usecase "Blinking light" as UC1
+}
+
+@enduml
+
+@startuml
+[*] --> LED_off
+LED_off --> LED_on : [Hal_Delay expires]
+LED_on --> LED_off : [Hal_Delay expires]
+@enduml
+
+@startuml
+start
+:initialize GPIO;
+while (1?) is (1)
+  :toggle LED;
+  :wait x ms;
+endwhile (never)
+stop
+@enduml

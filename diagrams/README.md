@@ -1,4 +1,10 @@
-# UML 2.0 Diagrams
+# UML Diagrams
 
-This folders contains UML diagrams to document and clarify the current application.
-Among the diagrams are use case, state, and activity diagrams.
+The use case diagram for the Blinky program is
+![The use case diagram](UseCase.png)
+
+The activity diagram for the Blinky program is
+![The activity diagram](Activity.png)
+
+The state diagram for the Blinky program is
+![The state diagram](StateDiagram.png)
