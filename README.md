@@ -1,5 +1,9 @@
-# Learning about Microcontrollers in Automotive Systems (E0009E)
-This repository is made up of different branches that reflect the use of different peripherals on a STM32L476RG microcontroller
+# Dual Blinky
+The point of this branch is to start to add your own components.
+In this case, this is an external LED.
+Do not forget to add a resistor in series with the LED (e.g., follow this [tutorial](https://www.evilmadscientist.com/2012/resistors-for-leds/)).
 
-You can find additional material and information at:
-- STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
+The two LEDs are out of phase, that is, when one is on, the other is off.
+This is set in the beginning when you select the configuration of the chip (see figure below).
+
+![Chip configuration](dualBlinkyIO.png)
