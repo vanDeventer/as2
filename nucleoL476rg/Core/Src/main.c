@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * 				: blinky branch
+  * The idea is to flash on and off the on-board green LED
   ******************************************************************************
   * @attention
   *
@@ -96,6 +98,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);		// Toggle the green LED
+	  HAL_Delay(1000);								// Wait 1000 ms
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
