@@ -2,7 +2,8 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * In this branch we look at reading an input pin (the blue button in this case)
   ******************************************************************************
   * @attention
   *
@@ -96,6 +97,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))							// Check if the button is off (this should return 0, use debug)
+	  	  {
+		  	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);			// If so, turn off the LED
+	  	  }
+	  else
+	  	  {
+			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);		// If the button is pushed, turn on the LED
+	  	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
