@@ -9,11 +9,13 @@ rectangle AutomotiveSystem {
 
 @enduml
 
+
 @startuml
 [*] --> LED_off
 LED_off --> LED_on : [Hal_Delay expires]
 LED_on --> LED_off : [Hal_Delay expires]
 @enduml
+
 
 @startuml
 start
@@ -23,4 +25,33 @@ while (1?) is (1)
   :wait x ms;
 endwhile (never)
 stop
+@enduml
+
+
+@startuml
+partition "initialize GPIO" {
+  start
+ floating note
+        This is function in main.c with its prototype at the top
+        ----
+        //Note that there are several registers to be set//
+    end note
+    :Configure GPIO pin Output Level;
+   note right
+HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+end note
+    :Configure GPIO pin : LD2_Pin;
+note right
+GPIO_InitStruct.Pin = LD2_Pin;
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+end note
+floating note left 
+LD2.Pin is defined in main.h
+end note
+    stop
+
+}
 @enduml
