@@ -1,0 +1,57 @@
+@startuml
+left to right direction
+
+actor Student
+
+rectangle AutomotiveSystem {
+  usecase "Blinking light" as UC1
+}
+
+@enduml
+
+
+
+@startuml
+partition "initialize GPIO" {
+  start
+ floating note
+        This is function in main.c with its prototype at the top
+        ----
+        //Note that there are several registers to be set//
+    end note
+    :Configure GPIO pin Output Level;
+   note right
+HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+end note
+    :Configure GPIO pin : LD2_Pin;
+note right
+GPIO_InitStruct.Pin = LD2_Pin;
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+end note
+floating note left 
+LD2.Pin is defined in main.h
+end note
+:Configure GPIO pin : PC7;
+note right
+GPIO_InitStruct.Pin = GPIO_PIN_7;
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+GPIO_InitStruct.Pull = GPIO_NOPULL;
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+end note
+    stop
+
+}
+@enduml
+
+
+
+@startuml
+[*] --> green_LED_off__red_LED_on
+green_LED_off__red_LED_on --> green_LED_on__red_LED_off : [Hal_Delay expires]
+green_LED_on__red_LED_off --> green_LED_off__red_LED_on : [Hal_Delay expires]
+@enduml
