@@ -388,7 +388,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))							// Check if the button is off (this should return 0, use debug)
+	  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))							// Check if the button is not pressed (high) (this should return non-zero: use debug, SFR tab, GPIO, IDR)
  80004d4:	f44f 5100 	mov.w	r1, #8192	; 0x2000
  80004d8:	4809      	ldr	r0, [pc, #36]	; (8000500 <main+0x40>)
  80004da:	f000 fd15 	bl	8000f08 <HAL_GPIO_ReadPin>
@@ -403,14 +403,14 @@ int main(void)
  80004ec:	f000 fd24 	bl	8000f38 <HAL_GPIO_WritePin>
  80004f0:	e7f0      	b.n	80004d4 <main+0x14>
 	  	  }
-	  else
+	  else  // The signal is low
 	  	  {
 			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);		// If the button is pushed, turn on the LED
  80004f2:	2201      	movs	r2, #1
  80004f4:	2120      	movs	r1, #32
  80004f6:	f04f 4090 	mov.w	r0, #1207959552	; 0x48000000
  80004fa:	f000 fd1d 	bl	8000f38 <HAL_GPIO_WritePin>
-	  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))							// Check if the button is off (this should return 0, use debug)
+	  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))							// Check if the button is not pressed (high) (this should return non-zero: use debug, SFR tab, GPIO, IDR)
  80004fe:	e7e9      	b.n	80004d4 <main+0x14>
  8000500:	48000800 	.word	0x48000800
 
