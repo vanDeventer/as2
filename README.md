@@ -6,4 +6,4 @@ How frustrating would it be that you tried to shift gears and it did not happen 
 
 Formula SAE steering wheel (developed by an [Automotive Systems student](https://www.diva-portal.org/smash/get/diva2:1020208/FULLTEXT01.pdf))
 
-![SWheelFront](DSCF0495.JPG) ![SWheelBack](DSCF0495.JPG)
+![SWheelFront](DSCF0495.JPG) ![SWheelBack](DSCF0496.JPG)
