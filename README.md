@@ -1,8 +1,6 @@
 # Digital signal input
-The point of this branch is to use a digital input.
+The point of this branch is to use a digital input (GPIO).
 In this case we are using the blue button on the as an input and turn on the green LED on the development board when the button is pushed.
-
-![Blue button and green LED](blueButton.png)
 
 One could have used the output of an astable 555 timer.
 
