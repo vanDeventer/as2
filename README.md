@@ -1,12 +1,9 @@
-# Learning about Microcontrollers in Automotive Systems (E0009E)
-This repository is made up of different branches that reflect the use of different peripherals on a STM32L476RG microcontroller
+# Blocking LED
+The idea here is to show that a delay, ```HAL_Delay(2000);```, it might affect you negatively. 
+You press the button and it is not until that delay has expired that the button change is detected.
+Imagine having a steering wheel with paddles to change gears.
+How frustrating would it be that you tried to shift gears and it did not happen until two seconds later?
 
-You can find additional material and information at:
-- STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
-## Branch order
-To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
-- GPIO
-	- [blinky](https://github.com/vanDeventer/as2/tree/blinky), which flash an LED
-	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
-	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
-	- blockingLED, where a flashing LED blocks the turning on or off of a second LED
+Formula SAE steering wheel (developed by an [Automotive Systems student](https://www.diva-portal.org/smash/get/diva2:1020208/FULLTEXT01.pdf))
+
+![SWheelFront](DSCF0495.JPG) ![SWheelBack](DSCF0495.JPG)
