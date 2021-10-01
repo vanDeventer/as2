@@ -2,7 +2,8 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * Demonstrating external interrupts with a blocking LED
   ******************************************************************************
   * @attention
   *
