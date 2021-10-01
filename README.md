@@ -1,37 +1,13 @@
-# Learning about Microcontrollers in Automotive Systems (E0009E)
-This repository is made up of different branches that reflect the use of different peripherals on a STM32L476RG microcontroller
+# External Interrupts
+The title non-blocking LED is a bit misleading since nothing is done to the flashing (external LED) as seen in the booking LED branch. 
+We here use external interrupts to deal with the logic that delayed the reaction to an external state change. 
+(If we wanted to make the flashing LED non-blocking, we might choose to use pulse width modulation (PWM), which is covered later on.)
+Comparing the signals form the two implementations (BlockingLED and nonBlockingLED) should make the concept clear.
 
-You can find additional material and information at:
-- STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
-## Branch order
-To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
-- GPIO
-	- [blinky](https://github.com/vanDeventer/as2/tree/blinky), which flash an LED
-	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
-	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
-	- [blockingLED](https://github.com/vanDeventer/as2/tree/blockingLED), where a flashing LED blocks the turning on or off of a second LED
-	- NonblockingLED, or the use of **External Interrupts** for real time response.
-- UART
-	- helloWorld, which displays ```Hello World``` on the hosting computer with Putty.
-	- blockingEcho, which waits and returns what is sent (or typed).
-	- nonBlockingEcho, which uses an **Internal Interrupt** to inform that a new character has been received on UART.
-	- buttonMemu
-	- keyMenu
-- ADC
-	- adc
-- I2C
-	- tmp102
-	- imuI2cXaccel
-	- i2Cslave
-	- i2cLcd
-- SPI
-	- imuSpiXaccel
-	- SPIslave
-- Timer/Counters
-	- breathingLED
-	- pwmServo
-	- inputCapture
-	- rpm555
-- CAN
-	- CANlooback
-	- CANvel
+The idea here is that when a state change occurs on the blue button input pin, a call back function is executed.
+ST Microelectronics has a good [video](https://youtu.be/w_81fHydEoE) about it.
+
+To set the blue button to cause interrupts, one must choose which mode and then turn on the external interrupts.
+
+![Mode](GPIOmode.png)
+![InetrruptVector](turningOnExtI.png)
