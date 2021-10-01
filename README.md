@@ -10,4 +10,4 @@ ST Microelectronics has a good [video](https://youtu.be/w_81fHydEoE) about it.
 To set the blue button to cause interrupts, one must choose which mode and then turn on the external interrupts.
 
 ![Mode](GPIOmode.png)
-![InetrruptVector](turningOnExtI.png)
+![InetrruptVector](turningONExtI.png)
