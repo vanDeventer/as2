@@ -2,7 +2,8 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * Hello World sends a fixed string to the connected laptop
   ******************************************************************************
   * @attention
   *
@@ -22,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,6 +68,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	char courseName[] = "Automotive Systems 2\r\n";  // null or \0 is added during the initialization
 
   /* USER CODE END 1 */
 
@@ -89,7 +92,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_UART_Transmit(&huart2, (uint8_t*)courseName, strlen(courseName), HAL_MAX_DELAY);
   /* USER CODE END 2 */
 
   /* Infinite loop */
