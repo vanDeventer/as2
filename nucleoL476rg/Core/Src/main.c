@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * This code waits to receive a character from the laptop and echoes it back
+  * This is a blocking function & the LED toggles after each character
   ******************************************************************************
   * @attention
   *
@@ -66,6 +68,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	char text[1];
 
   /* USER CODE END 1 */
 
@@ -96,6 +99,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_UART_Receive(&huart2, (uint8_t *)text, 1, HAL_MAX_DELAY); // Wait until a character is received from the laptop
+	  HAL_UART_Transmit(&huart2, (uint8_t *)text, 1, 100);  // Return the character to the laptop
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);		// Toggle the green LED
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
