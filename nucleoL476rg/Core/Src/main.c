@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * This is a non blocking version of the echo program (Blinky does not wait)
+  * An internal interrupt is caused when a new character is received
   ******************************************************************************
   * @attention
   *
@@ -56,7 +58,7 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+ char text[1]; // This variable holds the new character;
 /* USER CODE END 0 */
 
 /**
@@ -89,13 +91,15 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_UART_Receive_IT (&huart2, (uint8_t*)text, 1);  // Prepare for a callback after 1 byte
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); // Toggle the green LED
+	  HAL_Delay(250); // Wait a quarter of a second
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -219,7 +223,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  HAL_UART_Receive_IT(&huart2, (uint8_t*)text, 1);		// Prepare for a callback after 1 byte
+  HAL_UART_Transmit(&huart2, (uint8_t *)text, 1, 100);  // Return the character to the laptop
+}
 /* USER CODE END 4 */
 
 /**
