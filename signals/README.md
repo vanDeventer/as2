@@ -1,2 +1,4 @@
 # Signals
-This folder contains screenshots from the Saleae Logic Analyzer used to capture relevant signals related to the peripheral on which the branch focuses on.
+We can look at the transmit (Tx) and receive (Rx) signals of UART2 to see the frames being sent between the microcontroller and the laptop.
+
+![UART Signals](helloUART.png)

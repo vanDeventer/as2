@@ -1,12 +1,12 @@
-# Learning about Microcontrollers in Automotive Systems (E0009E)
-This repository is made up of different branches that reflect the use of different peripherals on a STM32L476RG microcontroller
+# Hello World
 
-You can find additional material and information at:
-- STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
-## Branch order
-To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
-- GPIO
-	- [blinky](https://github.com/vanDeventer/as2/tree/blinky), which flash an LED
-	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
-	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
-	- blockingLED, where a flashing LED blocks the turning on or off of a second LED
+Hello World is usually the first program one writes when evaluating a new computer language.
+With a microcontroller, a first program tends to be "Blinky".
+In this branch we display a text string on the connected laptop using a terminal emulator like Putty.
+
+In the code we allocate memory for an array of characters.
+In the debug mode, one can step through the code and see what is in the chip's memory (right side of the figure below).
+
+We then use the UART peripheral to transmit the text string to the laptop.
+
+![Debug mode](debugMem.png)
