@@ -10,11 +10,11 @@ To make the most of this repository, the student might want to study each branch
 	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
 	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
 	- [blockingLED](https://github.com/vanDeventer/as2/tree/blockingLED), where a flashing LED blocks the turning on or off of a second LED
-	- NonblockingLED, or the use of **External Interrupts** for real time response.
+	- [NonblockingLED](https://github.com/vanDeventer/as2/tree/nonBlockingLED), or the use of **External Interrupts** for real time response.
 - UART
 	- [helloWorld](https://github.com/vanDeventer/as2/tree/helloWorld), which displays ```Automotive Systems 2``` on the hosting computer with Putty.
 	- blockingEcho, which waits and returns what is sent (or typed).
-	- [nonBlockingEcho](https://github.com/vanDeventer/as2/tree/nonBlockingLED), which uses an **Internal Interrupt** to inform that a new character has been received on UART.
+	- nonBlockingEcho, which uses an **Internal Interrupt** to inform that a new character has been received on UART.
 	- buttonMemu
 	- keyMenu
 - ADC
