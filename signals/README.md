@@ -1,2 +1,4 @@
-# Signals
-This folder contains screenshots from the Saleae Logic Analyzer used to capture relevant signals related to the peripheral on which the branch focuses on.
+# ADC Conversion
+The voltage supplied to the analog pin is converted into a 12 bit digital value, which is then sent to the laptop over UART.
+
+![ADC](add.png)

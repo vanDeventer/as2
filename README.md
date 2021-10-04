@@ -1,12 +1,6 @@
-# Learning about Microcontrollers in Automotive Systems (E0009E)
-This repository is made up of different branches that reflect the use of different peripherals on a STM32L476RG microcontroller
+# Analog to Digital Conversion
+The analog signal (0-3.3 V) connected to the Arduino style input A0 is converted  in the while loop into a number and reported to the laptop using UART.
 
-You can find additional material and information at:
-- STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
-## Branch order
-To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
-- GPIO
-	- [blinky](https://github.com/vanDeventer/as2/tree/blinky), which flash an LED
-	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
-	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
-	- blockingLED, where a flashing LED blocks the turning on or off of a second LED
+This code is based on Digikey [tutorial](https://www.digikey.se/sv/maker/projects/getting-started-with-stm32-working-with-adc-and-dma/f5009db3a3ed4370acaf545a3370c30c) with Shawn Hymel.
+
+![Setup](adcSetup.png)
