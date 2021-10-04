@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * This code converts the analog signal on A0 to a 12 bit value which it
+  * transmits over UART
   ******************************************************************************
   * @attention
   *
