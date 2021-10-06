@@ -1,2 +1,4 @@
 # Signals
-This folder contains screenshots from the Saleae Logic Analyzer used to capture relevant signals related to the peripheral on which the branch focuses on.
+The PWM signals show when the servo returns to it clockwise limit from it counter clockwise limit.
+
+![Servo signal](servoPWM.png)
