@@ -29,7 +29,7 @@ To make the most of this repository, the student might want to study each branch
 	- SPIslave
 - Timer/Counters
 	- [breathingLED](https://github.com/vanDeventer/as2/tree/breathingLED) the green LED gets brighter and dimmer cyclicly
-	- pwmServo
+	- [pwmServo](https://github.com/vanDeventer/as2/tree/pwmServo) controls the position of an RC steering servo
 	- inputCapture
 	- rpm555
 - CAN
