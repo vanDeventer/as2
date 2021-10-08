@@ -30,7 +30,7 @@ To make the most of this repository, the student might want to study each branch
 - Timer/Counters
 	- [breathingLED](https://github.com/vanDeventer/as2/tree/breathingLED) the green LED gets brighter and dimmer cyclicly
 	- [pwmServo](https://github.com/vanDeventer/as2/tree/pwmServo) controls the position of an RC steering servo
-	- inputCapture
+	- [inputCapture](https://github.com/vanDeventer/as2/tree/inputCapture) measures the time between events (rising edges)
 	- rpm555
 - CAN
 	- CANloopback
