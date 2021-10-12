@@ -3,6 +3,7 @@ This repository is made up of different branches that reflect the use of differe
 
 You can find additional material and information at:
 - STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
+- [Online Training](https://www.st.com/content/st_com/en/support/learning/stm32-education/stm32-online-training/stm32l4-online-training.html)
 ## Branch order
 To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
 - GPIO
