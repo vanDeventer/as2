@@ -2,7 +2,10 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * The CANvel implementation requests the velocity of a modern car over
+  * the diagnostic port using the correct OBD2-PID. It filters the replies to
+  * look at the one about the velocity.
   ******************************************************************************
   * @attention
   *
@@ -22,7 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define requestMessagesID		0x07DF
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -40,16 +45,23 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+CAN_HandleTypeDef hcan1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+CAN_TxHeaderTypeDef TxHeader;		// See stm32l4xx_hal_can.h in Diver/Inc folder for the type definition
+CAN_RxHeaderTypeDef RxHeader;
+uint32_t TxMailbox;					// Mailbox that holds the message to be transferred
+uint8_t TxData[8];					// Transmitting buffer
+uint8_t RxData[8];					// Receiving buffer
+uint8_t count = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_CAN1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -66,7 +78,8 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	char uart_buf[50];  // Text buffer to send to the laptop terminal
+	int uart_buf_len;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -88,14 +101,48 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
+  uart_buf_len = sprintf(uart_buf, "\nCAN BUS Communication\r\n");
+  HAL_UART_Transmit(&huart2,(uint8_t*)uart_buf, uart_buf_len, 100);
 
+  // Setup the transmit header
+    TxHeader.DLC = 8;
+    TxHeader.ExtId = 0;
+    TxHeader.IDE = CAN_ID_STD;
+    TxHeader.RTR = CAN_RTR_DATA;
+    TxHeader.StdId = requestMessagesID;
+    TxHeader.TransmitGlobalTime = DISABLE;
+
+  // Setup the data or payload
+	TxData[0] = 0x02;	// Look at the next 2 bytes
+	TxData[1] = 0x01;	// Mode 1 requests Current Data
+	TxData[2] = 0x0D;	// Requesting velocity PID
+	TxData[3] = 0x00;	// Dummy values. The number of bytes sent is set by the DLC parameter
+	TxData[4] = 0x00;
+	TxData[5] = 0x00;
+	TxData[6] = 0x00;
+	TxData[7] = 0x00;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // Start the transmission process
+	  if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+	  	{
+	  		Error_Handler();
+	  	}
+
+	  HAL_Delay(500);  // Wait half a second
+
+	  // Send data payload to UART2
+	  if ((RxHeader.StdId == 0x07E8) && (RxHeader.IDE == CAN_ID_STD) )  //&& (RxHeader.DLC == 2)
+	  {
+		  uart_buf_len = sprintf(uart_buf, "%hhu\r\n", RxData[3]);
+		  HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, uart_buf_len, 100);
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -148,6 +195,67 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief CAN1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_CAN1_Init(void)
+{
+
+  /* USER CODE BEGIN CAN1_Init 0 */
+
+  /* USER CODE END CAN1_Init 0 */
+
+  /* USER CODE BEGIN CAN1_Init 1 */
+
+  /* USER CODE END CAN1_Init 1 */
+  hcan1.Instance = CAN1;
+  hcan1.Init.Prescaler = 16;
+  hcan1.Init.Mode = CAN_MODE_NORMAL;
+  hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_3TQ;
+  hcan1.Init.TimeTriggeredMode = DISABLE;
+  hcan1.Init.AutoBusOff = DISABLE;
+  hcan1.Init.AutoWakeUp = DISABLE;
+  hcan1.Init.AutoRetransmission = DISABLE;
+  hcan1.Init.ReceiveFifoLocked = DISABLE;
+  hcan1.Init.TransmitFifoPriority = DISABLE;
+  if (HAL_CAN_Init(&hcan1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN CAN1_Init 2 */
+  CAN_FilterTypeDef canfilterconfig;
+
+    canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
+    canfilterconfig.FilterBank = 10;  // anything between 0 to SlaveStartFilterBank
+    canfilterconfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+    canfilterconfig.FilterIdHigh = 0x7E0 << 5; // Standard CAN id (not extended)
+    canfilterconfig.FilterIdLow = 0x0000;
+    canfilterconfig.FilterMaskIdHigh = 0x7E0 << 5;
+    canfilterconfig.FilterMaskIdLow = 0x0000;
+    canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
+    canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
+    canfilterconfig.SlaveStartFilterBank = 0;  // 13 to 27 are assigned to slave CAN (CAN 2) OR 0 to 12 are assgned to CAN1
+
+    if (HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig) != HAL_OK)	// Configure the CAN filter
+    {
+      Error_Handler();
+    }
+    if (HAL_CAN_Start(&hcan1) != HAL_OK)	// Start the CAN peripheral
+    {
+      Error_Handler();
+    }
+    if (HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)  // Enable CAN message receive interrupts
+    {
+      Error_Handler();
+    }
+  /* USER CODE END CAN1_Init 2 */
+
 }
 
 /**
@@ -219,7 +327,17 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+/* This function is called when there is a CAN received interrupt*/
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan1)
+{
+	// Get the CAN message from FIFO0, put the header into the receive header and the data in the its array
+	if (HAL_CAN_GetRxMessage(hcan1, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+	{
+		/* Reception Error */
+		Error_Handler();
+	}
+	count++;
+}
 /* USER CODE END 4 */
 
 /**
