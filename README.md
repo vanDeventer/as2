@@ -21,8 +21,8 @@ To make the most of this repository, the student might want to study each branch
 - ADC
 	- [adc](https://github.com/vanDeventer/as2/tree/adc) transform the analog signal from A0 to a 12 bit number
 - I2C
-	- tmp102
-	- imuI2cXaccel
+	- [tmp102](https://github.com/vanDeventer/as2/tree/tmp102) reads the temperature of a TMP102 sensor over the I2C bus
+	- [imuI2cXaccel](https://github.com/vanDeventer/as2/tree/imuI2cXaccel) obtains the accelerometer value from an IMU in the X direction.
 	- i2Cslave
 	- i2cLcd
 - SPI
@@ -34,7 +34,7 @@ To make the most of this repository, the student might want to study each branch
 	- [inputCapture](https://github.com/vanDeventer/as2/tree/inputCapture) measures the time between events (rising edges)
 	- rpm555
 - CAN
-	- CANloopback
-	- CANvel
+	- [CANloopback](https://github.com/vanDeventer/as2/tree/CANVel) teaches how to transmit frames and filter incoming messages
+	- [CANvel](https://github.com/vanDeventer/as2/tree/CANVel) display in a terminal window the vehicle speed (over the diagnostic port)
 - Error handling
 - Real Time Operating System (RTOS)
