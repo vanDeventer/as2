@@ -1,12 +1,8 @@
-# Learning about Microcontrollers in Automotive Systems (E0009E)
-This repository is made up of different branches that reflect the use of different peripherals on a STM32L476RG microcontroller
+# Vehicle speed from CAN bus over the diagnostic port
+This implementation of the code requests the speed of the car from the engine controller every half second and displays the velocity over UART on a connected laptop.
 
-You can find additional material and information at:
-- STM32 MCU [Wiki](https://wiki.st.com/stm32mcu)
-## Branch order
-To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
-- GPIO
-	- [blinky](https://github.com/vanDeventer/as2/tree/blinky), which flash an LED
-	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
-	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
-	- blockingLED, where a flashing LED blocks the turning on or off of a second LED
+A CAN transceiver is required and it is not on the Nucleo board.
+
+A good explanation can be found on CSS Electronics's [web page](https://www.csselectronics.com/pages/obd2-explained-simple-intro) where they explain each of the bytes sent and received (see § Raw OBD2 frame details).
+
+The setup of the chip are similar to that of the CANloopback branch, except that it is in **Normal** mode rather than Loopback
