@@ -2,7 +2,9 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * This implementation of the code uses I2C to interface a TMP102 sensor and
+  * displays the temperature on a terminal emulation via UART
   ******************************************************************************
   * @attention
   *
@@ -22,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,16 +43,19 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+static const uint8_t TMP102_ADDR = 0x48 << 1; // Use 8-bit address
+static const uint8_t REG_TEMP = 0x00;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -66,7 +72,10 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  HAL_StatusTypeDef ret; 	// to hold communication errors if such occur
+  uint8_t buf[12]; 			// to hold the character string for UART communication or the bytes from the TMP102 chip
+  int16_t val; 				// to hold raw value from the TMP102 chip
+  float temp_c; 			// to hold the temperature value in Celcius
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -88,6 +97,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -96,6 +106,44 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // Tell TMP102 that we want to read from the temperature register
+	    buf[0] = REG_TEMP;
+	    ret = HAL_I2C_Master_Transmit(&hi2c1, TMP102_ADDR, buf, 1, 200);
+	    if ( ret != HAL_OK ) {
+	      strcpy((char*)buf, "Error Tx\r\n");
+	    } else {
+
+	      // Read 2 bytes from the temperature register
+	      ret = HAL_I2C_Master_Receive(&hi2c1, TMP102_ADDR, buf, 2, 200);
+	      if ( ret != HAL_OK ) {
+	        strcpy((char*)buf, "Error Rx\r\n");
+	      } else {
+
+	        //Combine the bytes
+	        val = ((int16_t)buf[0] << 4) | (buf[1] >> 4);
+
+	        // Convert to 2's complement, since temperature can be negative
+	        if ( val > 0x7FF ) {
+	          val |= 0xF000;
+	        }
+
+	        // Convert to float temperature value (Celsius)
+	        temp_c = val * 0.0625;
+
+	        // Convert temperature to decimal format
+	        temp_c *= 100;
+	        sprintf((char*)buf,
+	              "%u.%u C\r\n",
+	              ((unsigned int)temp_c / 100),
+	              ((unsigned int)temp_c % 100));
+	      }
+	    }
+
+	    // Send out buffer (temperature or error message)
+	    HAL_UART_Transmit(&huart2, buf, strlen((char*)buf), HAL_MAX_DELAY);
+
+	    // Wait
+	    HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -148,6 +196,52 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x10909CEC;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**
