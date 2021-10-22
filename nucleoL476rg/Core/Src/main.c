@@ -2,7 +2,8 @@
 /**
   ******************************************************************************
   * @file           : main.c
-  * @brief          : Main program body
+  * @brief          : Automotive Systems 2
+  * Main program body for IMU measurements using the IMC-20948 (X acceleration)
   ******************************************************************************
   * @attention
   *
@@ -22,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +34,18 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/***********************/
+/* Bank 0 register map */
+/***********************/
+#define ICM20648_REG_WHO_AM_I 				0x00	/**< Device ID register                                     */
+#define ICM20648_REG_PWR_MGMT_1          	0x06    /**< Power Management 1 register                            */
+#define ICM20648_REG_ACCEL_XOUT_H_SH     	0x2D    /**< Accelerometer X-axis data high byte                    */
+#define ICM20648_REG_ACCEL_XOUT_L_SH     	0x2E    /**< Accelerometer X-axis data low byte                     */
+#define ICM20648_REG_ACCEL_YOUT_H_SH     	0x2F    /**< Accelerometer Y-axis data high byte                    */
+#define ICM20648_REG_ACCEL_YOUT_L_SH     	0x30    /**< Accelerometer Y-axis data low byte                     */
+#define ICM20648_REG_ACCEL_ZOUT_H_SH     	0x31    /**< Accelerometer Z-axis data high byte                    */
+#define ICM20648_REG_ACCEL_ZOUT_L_SH     	0x32    /**< Accelerometer Z-axis data low byte                     */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -40,23 +54,26 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+static const uint8_t IMU_ADDR = 0x69 << 1; // Use 8-bit address
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+ int16_t probeX; // This global variable is used for the CubeMonitor to show the X acceleration
 /* USER CODE END 0 */
 
 /**
@@ -66,7 +83,9 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	HAL_StatusTypeDef ret;
+	char msg[20]; // Allocate an array of characters to send to Putty.
+	uint8_t buf[6]; // Allocate an array of unsigned integers to communicate with I2C
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -88,15 +107,63 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	// Get the ICM-20948 that it is connected
+	buf[0] = ICM20648_REG_WHO_AM_I;
+	ret = HAL_I2C_Master_Transmit(&hi2c1, IMU_ADDR, buf, 1, HAL_MAX_DELAY);
+	if (ret != HAL_OK) {
+		strcpy(msg, "Error Tx\r\n");
+	} else {
+		// read Who am I register
+		ret = HAL_I2C_Master_Receive(&hi2c1, IMU_ADDR, buf, 1, HAL_MAX_DELAY);
+		if (ret != HAL_OK) {
+			strcpy(msg, "Error Tx\r\n");
+		} else {
+			 // Convert to string and print
+			    sprintf(msg, "%hu\r\n", buf[0]);
+		}
+	}
+	// send out buffer (chid id or error message)
+	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY); // If all is OK, you should see 0xEA (234) in Putty
+
+	// Power up the sensors
+	buf[0] = ICM20648_REG_PWR_MGMT_1;
+	buf[1] = 0x01;
+	ret = HAL_I2C_Master_Transmit(&hi2c1, IMU_ADDR, buf, 2, HAL_MAX_DELAY);
+	if (ret != HAL_OK) {
+		strcpy(msg, "Error Tx\r\n");
+	} else {
+				strcpy(msg, "Sensors are on\r\n");
+	}
+	// send out buffer (power status or error message)
+	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
   while (1)
   {
-    /* USER CODE END WHILE */
+		buf[0] = ICM20648_REG_ACCEL_XOUT_H_SH;
+		ret = HAL_I2C_Master_Transmit(&hi2c1, IMU_ADDR, buf, 1, HAL_MAX_DELAY);
+		if (ret != HAL_OK) {
+			strcpy(msg, "Error Tx\r\n");
+		} else {
+			// read Who am I register
+			ret = HAL_I2C_Master_Receive(&hi2c1, IMU_ADDR, buf, 2, HAL_MAX_DELAY);
+			if (ret != HAL_OK) {
+				strcpy(msg, "Error Tx\r\n");
+			} else {
+				 // Convert to string and print
+				probeX = (buf[0] << 8 | buf[1]) - 2147483648;
+				sprintf(msg, "%hd\r\n", probeX);
+			}
+		}
+		// send out buffer (chid id or error message)
+		HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY); // If all is OK, you should see accelX
+		HAL_Delay(500);
+		/* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
@@ -148,6 +215,52 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x10909CEC;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**
