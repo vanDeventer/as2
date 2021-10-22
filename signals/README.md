@@ -1,2 +1,4 @@
 # Signals
-This folder contains screenshots from the Saleae Logic Analyzer used to capture relevant signals related to the peripheral on which the branch focuses on.
+In the figure below, one sees the request to the IMU for the X acceleration and then the read request of two bytes of the X acceleration.
+
+![X accel](Xaccel.png)
