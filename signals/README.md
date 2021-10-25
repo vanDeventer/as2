@@ -1,2 +1,5 @@
 # Signals
-This folder contains screenshots from the Saleae Logic Analyzer used to capture relevant signals related to the peripheral on which the branch focuses on.
+In the folder are more signals.
+The CAN messages of interest are in the *as2* folder.
+Here is the delay between the request and the reply
+![Delay](Delay.png)

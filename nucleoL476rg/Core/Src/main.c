@@ -107,11 +107,11 @@ int main(void)
   HAL_UART_Transmit(&huart2,(uint8_t*)uart_buf, uart_buf_len, 100);
 
   // Setup the transmit header
-    TxHeader.DLC = 8;
+    TxHeader.DLC = 8;  // Sending 8 bytes
     TxHeader.ExtId = 0;
-    TxHeader.IDE = CAN_ID_STD;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.StdId = requestMessagesID;
+    TxHeader.IDE = CAN_ID_STD;  // Use standard message id
+    TxHeader.RTR = CAN_RTR_DATA;   // Sending data to request information
+    TxHeader.StdId = requestMessagesID; // Message id is 0x07DF to request information
     TxHeader.TransmitGlobalTime = DISABLE;
 
   // Setup the data or payload
@@ -140,7 +140,7 @@ int main(void)
 	  // Send data payload to UART2
 	  if ((RxHeader.StdId == 0x07E8) && (RxHeader.IDE == CAN_ID_STD) )  //&& (RxHeader.DLC == 2)
 	  {
-		  uart_buf_len = sprintf(uart_buf, "%hhu\r\n", RxData[3]);
+		  uart_buf_len = sprintf(uart_buf, "%hu km/h\r\n", RxData[3]);
 		  HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, uart_buf_len, 100);
 	  }
     /* USER CODE END WHILE */
