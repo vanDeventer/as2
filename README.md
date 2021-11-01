@@ -7,3 +7,9 @@ It sets up a UART communication and a I2C communication to read temperature usin
 The figure bellow shows the Device Manager to see on which COM port is the Nucleo connected to and the setup in Putty.
 
 ![Putty](Putty.png)
+
+All Qwiic cables have the following color scheme and arrangement:
+- Black = GND
+- Red = 3.3V
+- Blue = SDA
+- Yellow = SCL
