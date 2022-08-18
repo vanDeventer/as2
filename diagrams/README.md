@@ -12,3 +12,5 @@ The activity diagrams for the Blinky program are
 The state diagram for the Blinky program is
 
 ![The state diagram](StateDiagram.png)
+
+![Diagrams commited by Oskar](blinky_ow.pdf)
