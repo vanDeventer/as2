@@ -26,7 +26,7 @@ To make the most of this repository, the student might want to study each branch
 	- i2Cslave
 	- i2cLcd
 - SPI
-	- imuSpiXaccel
+	- [imuSpiXaccel](https://github.com/vanDeventer/as2/tree/imuI2cXaccel) obtains the accelerometer value from an IMU in the X direction.
 	- SPIslave
 - Timer/Counters
 	- [breathingLED](https://github.com/vanDeventer/as2/tree/breathingLED) the green LED gets brighter and dimmer cyclicly
