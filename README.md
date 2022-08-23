@@ -38,3 +38,4 @@ To make the most of this repository, the student might want to study each branch
 	- [CANvel](https://github.com/vanDeventer/as2/tree/CANVel) display in a terminal window the vehicle speed (over the diagnostic port)
 - Error handling
 - Real Time Operating System (RTOS)
+	- [rtos](https://github.com/vanDeventer/as2/tree/rtos) has two threads that toggle the board's LED at different rates
