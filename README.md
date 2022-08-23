@@ -22,11 +22,11 @@ To make the most of this repository, the student might want to study each branch
 	- [adc](https://github.com/vanDeventer/as2/tree/adc) transform the analog signal from A0 to a 12 bit number
 - I2C
 	- [tmp102](https://github.com/vanDeventer/as2/tree/tmp102) reads the temperature of a TMP102 sensor over the I2C bus
-	- [imuI2cXaccel](https://github.com/vanDeventer/as2/tree/imuI2cXaccel) obtains the accelerometer value from an IMU in the X direction.
+	- [imuI2cXaccel](https://github.com/vanDeventer/as2/tree/imuI2cXaccel) obtains the accelerometer value from an IMU in the X direction
 	- i2Cslave
-	- i2cLcd
+	- [i2cLcd](https://github.com/vanDeventer/as2/tree/i2cLcd) displays "Automotive Systems 2" on the qwiic 128x32 OLED display 
 - SPI
-	- [imuSpiXaccel](https://github.com/oskwin/as2/tree/imuSpiXaccel) obtains the accelerometer value from an IMU in the X direction.
+	- [imuSpiXaccel](https://github.com/oskwin/as2/tree/imuSpiXaccel) obtains the accelerometer value from an IMU in the X direction
 	- SPIslave
 - Timer/Counters
 	- [breathingLED](https://github.com/vanDeventer/as2/tree/breathingLED) the green LED gets brighter and dimmer cyclicly
