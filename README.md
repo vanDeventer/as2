@@ -8,7 +8,7 @@ You can find additional material and information at:
 To make the most of this repository, the student might want to study each branch (mostly main.c) in the following order:
 - GPIO
 	- [blinky](https://github.com/vanDeventer/as2/tree/blinky), which flash an LED
-	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two lEDs out of synch
+	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two LEDs out of synch
 	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
 	- [blockingLED](https://github.com/vanDeventer/as2/tree/blockingLED), where a flashing LED blocks the turning on or off of a second LED
 	- [nonblockingLED](https://github.com/vanDeventer/as2/tree/nonBlockingLED), or the use of **External Interrupts** for real time response.
