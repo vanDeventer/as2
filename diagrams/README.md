@@ -13,7 +13,7 @@ The state diagram for the Blinky program is
 
 ![The state diagram](StateDiagram.png)
 
-###### Description 
+## Description 
 
 The purpose of the program is to be able to toggle a light (kind of like when a turn signal notifies the other drivers).
 The states that is represented in the code is [LED ON] and [LED OFF]. HAL_Delay() is the "wall" that decides when the microcontroller is supposed to switch state.
