@@ -22,12 +22,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+enum dStates {PARK, REVERSE, NEUTRAL, DRIVE};	/* enumeration of states (C programming, p) */
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -43,7 +44,7 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+int dState = PARK;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,7 +67,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	uint8_t gear[12];  // null or \0 is added during the initialization
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -96,6 +97,21 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  switch (dState) {
+	  case PARK:
+		  strcpy((char*)gear, "Park\r\n");
+		  break;
+	  case REVERSE:
+		  strcpy((char*)gear, "Reverse\r\n");
+		  		  break;
+	  case NEUTRAL:
+	  		  strcpy((char*)gear, "Neutral\r\n");
+	  		  		  break;
+	  		  		  case DRIVE:
+	  		  		  strcpy((char*)gear, "Drive\r\n");
+	  		  		  		  break;
+	  }
+	  HAL_UART_Transmit(&huart2, (uint8_t*)gear, strlen(gear), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -118,6 +134,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -135,6 +152,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -216,10 +234,21 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == GPIO_PIN_13) {		// Check if the blue button caused the interrupt
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);			// If so, toggle the LED;
+	  if (++dState > DRIVE)
+	  		dState = PARK;
+  }
+}
 /* USER CODE END 4 */
 
 /**
@@ -253,5 +282,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
