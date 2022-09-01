@@ -67,7 +67,7 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t gear[12];  // null or \0 is added during the initialization
+	uint8_t gear[22];  // null or \0 is added during the initialization
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -106,12 +106,15 @@ int main(void)
 		  		  break;
 	  case NEUTRAL:
 	  		  strcpy((char*)gear, "Neutral\r\n");
-	  		  		  break;
-	  		  		  case DRIVE:
-	  		  		  strcpy((char*)gear, "Drive\r\n");
-	  		  		  		  break;
+	  		  break;
+	  case DRIVE:
+	  		strcpy((char*)gear, "Drive\r\n");
+	  		break;
+	  default:
+		  strcpy((char*)gear, "Something is wrong\r\n");  // In this case, this should not ever be executed. Try misspelling one of the states...(the compiler will catch that).
+		  break;
 	  }
-	  HAL_UART_Transmit(&huart2, (uint8_t*)gear, strlen(gear), HAL_MAX_DELAY);
+	  HAL_UART_Transmit(&huart2, (uint8_t*)gear, strlen((char*)gear), HAL_MAX_DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
