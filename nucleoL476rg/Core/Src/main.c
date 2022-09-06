@@ -59,6 +59,10 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
  char text[1]; // This variable holds the new character;
+ char request[10]; // This variable holds the typed request
+ int charIndex = 0; // This variable keeps track of how many characters are in request
+ int done = 0; // when the request is completed, we check it
+
 /* USER CODE END 0 */
 
 /**
@@ -100,6 +104,10 @@ int main(void)
   {
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); // Toggle the green LED
 	  HAL_Delay(250); // Wait a quarter of a second
+	  if (done ) {
+		  done = 0;
+		  HAL_UART_Transmit(&huart2, (uint8_t *)request, strlen(request), 100);  // Return the character to the laptop
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -226,7 +234,18 @@ static void MX_GPIO_Init(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   HAL_UART_Receive_IT(&huart2, (uint8_t*)text, 1);		// Prepare for a callback after 1 byte
-  HAL_UART_Transmit(&huart2, (uint8_t *)text, 1, 100);  // Return the character to the laptop
+  if (text[0] == '\r') {
+	  done = 1;
+	  charIndex = 0;
+  }
+  else {
+	  request[charIndex++] = text[0];
+	  if (charIndex > 9) {
+		  charIndex = 0;
+	  }
+	  request[charIndex] = '\0';
+  }
+
 }
 /* USER CODE END 4 */
 
