@@ -19,7 +19,7 @@ To make the most of this repository, the student might want to study each branch
 	- [blockingEcho](https://github.com/vanDeventer/as2/tree/blockingEcho), which waits and returns what is sent (or typed).
 	- [nonBlockingEcho](https://github.com/vanDeventer/as2/tree/nonBlockingEcho), which uses an **Internal Interrupt** to inform that a new character has been received on UART
 	- [buttonMemu](https://github.com/vanDeventer/as2/tree/buttonMenu), which simulates the gear selection of an automatic car using a button. 
-	- keyMenu
+	- [keyMenu](https://github.com/vanDeventer/as2/tree/keyMenu) lets you select the desired gear by typing it on the keyboard and pressing "Enter".
 - ADC
 	- [adc](https://github.com/vanDeventer/as2/tree/adc) transform the analog signal from A0 to a 12 bit number
 - I2C
