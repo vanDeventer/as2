@@ -24,12 +24,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+enum dStates {PARK, REVERSE, NEUTRAL, DRIVE};	/* enumeration of states (C programming, p) */
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -61,7 +62,7 @@ static void MX_USART2_UART_Init(void);
  char text[1]; // This variable holds the new character;
  char request[10]; // This variable holds the typed request
  int charIndex = 0; // This variable keeps track of how many characters are in request
- int done = 0; // when the request is completed, we check it
+ int textEntryDone = 0; // when the request is completed, we check it
 
 /* USER CODE END 0 */
 
@@ -72,6 +73,8 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	int dState = PARK;  // drive state allocated and initialized to park
+	uint8_t gear[22];  // null or \0 is added during the initialization
 
   /* USER CODE END 1 */
 
@@ -104,10 +107,32 @@ int main(void)
   {
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); // Toggle the green LED
 	  HAL_Delay(250); // Wait a quarter of a second
-	  if (done ) {
-		  done = 0;
-		  HAL_UART_Transmit(&huart2, (uint8_t *)request, strlen(request), 100);  // Return the character to the laptop
-	  }
+	  if (textEntryDone ) {
+		  textEntryDone = 0;
+		  switch (request[0]) {
+		  case 'p': case 'P':
+		  	dState = PARK;
+		  	strcpy((char*)gear, "Park\r\n");
+		  	break;
+		  case 'r': case 'R':
+		  	dState = REVERSE;
+		  	strcpy((char*)gear, "Reverse\r\n");
+		  	break;
+		  case 'n': case 'N':
+		  	dState = NEUTRAL;
+		  	strcpy((char*)gear, "Neutral\r\n");
+		  	break;
+		  case 'd': case 'D':
+		    dState = DRIVE;
+		  	strcpy((char*)gear, "Drive\r\n");
+		  	break;
+		  default:
+		  	strcpy((char*)gear, "Something is wrong\r\n");  // In this case, this should not ever be executed. Try misspelling one of the states...(the compiler will catch that).
+		  	break;
+		  }
+		  	  HAL_UART_Transmit(&huart2, (uint8_t*)gear, strlen((char*)gear), HAL_MAX_DELAY);
+	 }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -234,16 +259,18 @@ static void MX_GPIO_Init(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   HAL_UART_Receive_IT(&huart2, (uint8_t*)text, 1);		// Prepare for a callback after 1 byte
-  if (text[0] == '\r') {
-	  done = 1;
-	  charIndex = 0;
-  }
-  else {
-	  request[charIndex++] = text[0];
-	  if (charIndex > 9) {
-		  charIndex = 0;
-	  }
-	  request[charIndex] = '\0';
+  if (!textEntryDone) {  // this check is to prevent that new text is entered until it has been processed in main()
+    if (text[0] == '\r') {
+	    textEntryDone = 1;
+	    charIndex = 0;
+    }
+    else {
+	    request[charIndex++] = text[0];
+	    if (charIndex > 9) {
+	   	  charIndex = 0;
+	    }
+	    request[charIndex] = '\0';
+    }
   }
 
 }

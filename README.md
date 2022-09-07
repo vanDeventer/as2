@@ -1,8 +1,9 @@
-# Non Blocking USART Rx
-This branch uses an **interrupt** each time a character (byte) is received (which is a variable) and retransmits it back to the laptop.
-To illustrate that "Blinky" toggles the green LED every quarter of a second.
+# keyMenu
 
-Note again that the callback function is NOT part of the main() function.
-It is called by the interrupt service routine.
+The idea in this demo is to use the keyboard to select menus (only the firt letter of the menu is really used, for more letters, one must have more logic).
+The demo is uses an automatic gearbox as context: you must type the gear you want to go in.
+The user must press "Enter" at the end of the text entry.
 
-![UART interrupt](UARTinterrupt.png)
+This branch is based off the non blocking UART branch.
+
+Unlike the buttonMenu branch, the dState variable is defined in main() since it is only used there.
