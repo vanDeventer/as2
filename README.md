@@ -13,13 +13,13 @@ To make the most of this repository, the student might want to study each branch
 	- [dualBlinky](https://github.com/vanDeventer/as2/tree/dualBlinky). which flashes two LEDs out of synch
 	- [blueBotton](https://github.com/vanDeventer/as2/tree/blueButton), which uses the blue button to turn on the onboard green LED
 	- [blockingLED](https://github.com/vanDeventer/as2/tree/blockingLED), where a flashing LED blocks the turning on or off of a second LED
-	- [nonblockingLED](https://github.com/vanDeventer/as2/tree/nonBlockingLED), or the use of **External Interrupts** for real time response.
+	- [nonblockingLED](https://github.com/vanDeventer/as2/tree/nonBlockingLED), or the use of **External Interrupts** for real time response
 - UART
 	- [helloWorld](https://github.com/vanDeventer/as2/tree/helloWorld), which displays ```Automotive Systems 2``` on the hosting computer with Putty
-	- [blockingEcho](https://github.com/vanDeventer/as2/tree/blockingEcho), which waits and returns what is sent (or typed).
+	- [blockingEcho](https://github.com/vanDeventer/as2/tree/blockingEcho), which waits and returns what is sent (or typed)
 	- [nonBlockingEcho](https://github.com/vanDeventer/as2/tree/nonBlockingEcho), which uses an **Internal Interrupt** to inform that a new character has been received on UART
 	- [buttonMemu](https://github.com/vanDeventer/as2/tree/buttonMenu), which simulates the gear selection of an automatic car using a button. 
-	- [keyMenu](https://github.com/vanDeventer/as2/tree/keyMenu) lets you select the desired gear by typing it on the keyboard and pressing "Enter".
+	- [keyMenu](https://github.com/vanDeventer/as2/tree/keyMenu) lets you select the desired gear by typing it on the keyboard and pressing "Enter"
 - ADC
 	- [adc](https://github.com/vanDeventer/as2/tree/adc) transform the analog signal from A0 to a 12 bit number
 - I2C
@@ -35,6 +35,8 @@ To make the most of this repository, the student might want to study each branch
 	- [pwmServo](https://github.com/vanDeventer/as2/tree/pwmServo) controls the position of an RC steering servo
 	- [inputCapture](https://github.com/vanDeventer/as2/tree/inputCapture) measures the time between events (rising edges)
 	- rpm555
+- RTC
+	- [rtc](https://github.com/vanDeventer/as2/tree/rtc) demonstrate the use of the chip's real time clock
 - CAN
 	- [CANloopback](https://github.com/vanDeventer/as2/tree/CANVel) teaches how to transmit frames and filter incoming messages
 	- [CANvel](https://github.com/vanDeventer/as2/tree/CANVel) display in a terminal window the vehicle speed (over the diagnostic port)
