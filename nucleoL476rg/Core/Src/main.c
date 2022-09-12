@@ -72,7 +72,7 @@ static void MX_I2C1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-char myText[] = "Automotive System 2";
+char myText[] = "Automotive Systems 2";
 char retVal;
   /* USER CODE END 1 */
 
@@ -98,7 +98,7 @@ char retVal;
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   ssd1306_Init();
-  ssd1306_SetCursor(5, 5);
+  ssd1306_SetCursor(0, 5);
   retVal = ssd1306_WriteString(myText, Font_7x10, White);
   ssd1306_UpdateScreen();
   /* USER CODE END 2 */
