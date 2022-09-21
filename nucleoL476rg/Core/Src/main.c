@@ -3,9 +3,8 @@
   ******************************************************************************
   * @file           : main.c
   * @brief          : Automotive Systems 2
-  * The CANvel implementation requests the velocity of a modern car over
-  * the diagnostic port using the correct OBD2-PID. It filters the replies to
-  * look at the one about the velocity.
+  * The CANgear implementation requests the velocity and RPM of a modern car over
+  * the diagnostic port using the correct OBD2-PID. It also calculates the ratio (if it exist).
   ******************************************************************************
   * @attention
   *
@@ -46,6 +45,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
+
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -79,7 +79,11 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	char uart_buf[50];  // Text buffer to send to the laptop terminal
-	int uart_buf_len;
+	uint8_t uart_buf_len;
+	uint8_t speed;  // the vehicle speed
+	uint16_t rpm;  // the engine speed
+	float ratio; // RPM vs engine speed without accounting to diameters
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -114,35 +118,67 @@ int main(void)
     TxHeader.StdId = requestMessagesID; // Message id is 0x07DF to request information
     TxHeader.TransmitGlobalTime = DISABLE;
 
-  // Setup the data or payload
-	TxData[0] = 0x02;	// Look at the next 2 bytes
-	TxData[1] = 0x01;	// Mode 1 requests Current Data
-	TxData[2] = 0x0D;	// Requesting velocity PID
-	TxData[3] = 0x00;	// Dummy values. The number of bytes sent is set by the DLC parameter
-	TxData[4] = 0x00;
-	TxData[5] = 0x00;
-	TxData[6] = 0x00;
-	TxData[7] = 0x00;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // Get the vehicle's speed
+	  // Setup the data or payload for the speed of the vehicle
+	 	TxData[0] = 0x02;	// Look at the next 2 bytes
+	 	TxData[1] = 0x01;	// Mode 1 requests Current Data
+	 	TxData[2] = 0x0D;	// Requesting velocity PID
+	 	TxData[3] = 0x00;	// Dummy values. The number of bytes sent is set by the DLC parameter
+	 	TxData[4] = 0x00;
+	 	TxData[5] = 0x00;
+	 	TxData[6] = 0x00;
+	 	TxData[7] = 0x00;
+
 	  // Start the transmission process
 	  if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK)
 	  	{
 	  		Error_Handler();
 	  	}
 
-	  HAL_Delay(500);  // Wait half a second
+	  HAL_Delay(250);  // Wait for a quarter of a second
 
-	  // Send data payload to UART2
 	  if ((RxHeader.StdId == 0x07E8) && (RxHeader.IDE == CAN_ID_STD) )  //&& (RxHeader.DLC == 2)
 	  {
-		  uart_buf_len = sprintf(uart_buf, "%hu km/h\r\n", RxData[3]);
-		  HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, uart_buf_len, 100);
+		  speed = RxData[3]; // get the current speed
 	  }
+
+	  // Get the engine's RPM
+	  // Setup the data or payload for the engine RPM
+	  	 	TxData[0] = 0x02;	// Look at the next 2 bytes
+	  	 	TxData[1] = 0x01;	// Mode 1 requests Current Data
+	  	 	TxData[2] = 0x0C;	// Requesting engine speed PID
+	  	 	TxData[3] = 0x00;	// Dummy values. The number of bytes sent is set by the DLC parameter
+	  	 	TxData[4] = 0x00;
+	  	 	TxData[5] = 0x00;
+	  	 	TxData[6] = 0x00;
+	  	 	TxData[7] = 0x00;
+
+	  	  // Start the transmission process
+	  	  if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+	  	  	{
+	  	  		Error_Handler();
+	  	  	}
+	  	  HAL_Delay(250);  // Wait for a quarter of a second
+
+	  	  if ((RxHeader.StdId == 0x07E8) && (RxHeader.IDE == CAN_ID_STD) )  //&& (RxHeader.DLC == 2)
+	  	  {
+	  		  rpm = (RxData[3] << 8 | RxData[4]) >> 2; // get the current speed
+	  	  }
+
+	  	  if (speed > 0) {
+	  		  ratio = rpm / speed;
+	  	  }
+
+	 	 // Send the information to the laptop through UART2
+	  	uart_buf_len = sprintf(uart_buf, "%hu km/h at %hu RPM with ratio %hu \r\n ", speed, rpm, (unsigned int)ratio);
+	  	HAL_UART_Transmit(&huart2, (uint8_t*)uart_buf, uart_buf_len, 100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -165,6 +201,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -182,6 +219,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -371,5 +409,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
