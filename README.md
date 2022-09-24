@@ -28,7 +28,7 @@ To make the most of this repository, the student might want to study each branch
 	- i2Cslave
 	- [i2cLcd](https://github.com/vanDeventer/as2/tree/i2cLcd) displays "Automotive Systems 2" on the qwiic 128x32 OLED display 
 - SPI
-	- [imuSpiXaccel](https://github.com/oskwin/as2/tree/imuSpiXaccel) obtains the accelerometer value from an IMU in the X direction
+	- [imuSpiXaccel](https://github.com/vanDeventer/as2/tree/spiIMU) obtains the accelerometer value from an IMU in the X direction
 	- SPIslave
 - Timer/Counters
 	- [breathingLED](https://github.com/vanDeventer/as2/tree/breathingLED) the green LED gets brighter and dimmer cyclicly
