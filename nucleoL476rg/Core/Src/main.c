@@ -99,14 +99,17 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  buf[0] = readMask |ICM20648_REG_WHO_AM_I; // Prepare the instruction " read register 0x00 so you send 0x80
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET); // Pull the chip select line low
-   HAL_SPI_Transmit(&hspi1, buf, 1, 100); // Tell the ICM20948 what you want
-   HAL_SPI_Receive(&hspi1, buf, 1, 100); // Get the answer
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET); // Release the slave chip by bringing the line back up
-   buf[1] = 0;
-   sprintf(msg, "%hd\r\n", buf[0]);
-   HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+  // Check that everything is setup OK. When the chip is asked for its identity, it should reply 0xEA
+  do {
+	   buf[0] = readMask |ICM20648_REG_WHO_AM_I; // Prepare the instruction " read register 0x00 so you send 0x80
+	   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET); // Pull the chip select line low
+	   HAL_SPI_Transmit(&hspi1, buf, 1, 100); // Tell the ICM20948 what you want
+	   HAL_SPI_Receive(&hspi1, buf, 1, 100); // Get the answer
+	   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET); // Release the slave chip by bringing the line back up
+	   buf[1] = 0;
+	   sprintf(msg, "I am 0x%02X\r\n", buf[0]);
+       HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+   } while (buf[0] != 0xEA);
 
    buf[0] = writeMask | ICM20648_REG_PWR_MGMT_1; // Here you want to turn on the sensors by going out of sleep mode.
    buf[1] = 0x01; // This is done by writing a 0 on bit 6 of the power management register in the ICM 20948
@@ -203,16 +206,16 @@ static void MX_SPI1_Init(void)
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
+  hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -274,7 +277,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
