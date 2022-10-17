@@ -17,4 +17,4 @@ The CubeMonitor shows
 SPI setup
 ![SPI1](SPI1.png)
 Chip select setup
-![CS](chipSelectPA4.png)
+![CS](chipSelect.png)

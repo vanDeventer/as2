@@ -118,10 +118,10 @@ int main(void)
   // Check that everything is setup OK. When the chip is asked for its identity, it should reply 0xEA
   do {
    buf[0] = readMask |ICM20648_REG_WHO_AM_I; // Prepare the instruction " read register 0x00 so you send 0x80
-   HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_RESET); // Pull the chip select line low
+   HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_RESET); // Pull the chip select line low
    HAL_SPI_Transmit(&hspi1, buf, 1, 100); // Tell the ICM20948 what you want
    HAL_SPI_Receive(&hspi1, buf, 1, 100); // Get the answer
-   HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_SET); // Release the slave chip by bringing the line back up
+   HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_SET); // Release the slave chip by bringing the line back up
    buf[1] = 0;
    sprintf(msg, "I am 0x%02X\r\n", buf[0]);
    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
@@ -131,9 +131,9 @@ int main(void)
   // Turn on the sensors
   buf[0] = writeMask | ICM20648_REG_PWR_MGMT_1; // Here you want to turn on the sensors by going out of sleep mode.
   buf[1] = 0x01; // This is done by writing a 0 on bit 6 of the power management register in the ICM 20948
-  HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1, buf, 2, 100); // Send the register address and its content (2 bytes)
-  HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -141,10 +141,10 @@ int main(void)
   while (1)
   {
 	  buf[0] = readMask | ICM20648_REG_ACCEL_XOUT_H_SH; // Prepare the request to read the accelerometer data in X direction
-	  HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_RESET);
 	  HAL_SPI_Transmit(&hspi1, buf, 1, 100); // Send request
 	  HAL_SPI_Receive(&hspi1, buf, 6, 100); // Get the accelerations X, Y, Z high and low bytes (6 bytes)
-	  HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_SET);
+	  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_SET);
 	  acceleration.x = (buf[0] << 8 | buf[1]);  // Combine the two bytes into a signed 16 bit signed integer
 	  acceleration.y = (buf[2] << 8 | buf[3]);
 	  acceleration.z = (buf[4] << 8 | buf[5]);
@@ -361,7 +361,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SP1_CS_GPIO_Port, SP1_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ChipSelect_GPIO_Port, ChipSelect_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -369,12 +369,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SP1_CS_Pin */
-  GPIO_InitStruct.Pin = SP1_CS_Pin;
+  /*Configure GPIO pin : ChipSelect_Pin */
+  GPIO_InitStruct.Pin = ChipSelect_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(SP1_CS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(ChipSelect_GPIO_Port, &GPIO_InitStruct);
 
 }
 

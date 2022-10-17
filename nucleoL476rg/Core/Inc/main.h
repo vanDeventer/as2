@@ -64,14 +64,14 @@ void Error_Handler(void);
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
-#define SP1_CS_Pin GPIO_PIN_4
-#define SP1_CS_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define ChipSelect_Pin GPIO_PIN_6
+#define ChipSelect_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* SPI masks */
