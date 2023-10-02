@@ -1,7 +1,7 @@
 # Vehicle speed from CAN bus over the diagnostic port
 This implementation of the code requests the speed of the car from the engine controller every half second and displays the velocity over UART on a connected laptop.
 
-A CAN transceiver is required and it is not on the Nucleo board.
+A CAN transceiver is required and it is not on the Nucleo board. (The CAN Rx and Tx used in this example are on PA-11 and PA-12, which are on the right side of the CN10 header, not the upper left side.)
 
 A good explanation can be found on CSS Electronics's [web page](https://www.csselectronics.com/pages/obd2-explained-simple-intro) where they explain each of the bytes sent and received (see § Raw OBD2 frame details).
 
